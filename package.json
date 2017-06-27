@@ -1,0 +1,28 @@
+{
+  "name": "crypto-stock-market",
+  "version": "1.0.0",
+  "description": "crypto stock market",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "cryptocurency",
+    "stock",
+    "market"
+  ],
+  "author": "Paul-Emile Chantrel",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.3",
+    "mongo": "^0.1.0",
+    "mongod": "^2.0.0",
+    "mongodb": "^2.2.29",
+    "mongoose": "^4.11.0"
+  }
+}
