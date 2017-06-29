@@ -14,18 +14,28 @@
 	<body>
 	    <h1 class='appName text-center'>Crypto Stock Market</h1>
 	    <div class='container1'>
-	    	<div class='btn-date-container'>
-	    		<button class='hour btn'>H</button>
-	    		<button class='day btn'>D</button>
-	    		<button class='week btn'>W</button>
-	    		<button class='month btn'>M</button>
-	    		<button class='year btn'>Y</button>
-	    		<button class='all btn'>All</button>
+	    	<div class="Row">
+		    	<div class='btn-date-container'>
+		    		<button class='hour btn'>H</button>
+		    		<button class='day btn'>D</button>
+		    		<button class='week btn'>W</button>
+		    		<button class='month btn'>M</button>
+		    		<button class='year btn'>Y</button>
+		    		<button class='all btn'>All</button>
+		    	</div>
+		    	<div class='change'></div>
 	    	</div>
-	    	<div class='change'></div>
-	    	<div class='graph'></div>
+	    	<div class="Row">
+	    		<div class='graph'></div>
+	    		<div class='price'></div>
+	    	</div>
 	    </div>
 	    <div class='addGraph'></div>
+	    
+	    
+		
+		<script type="text/javascript" src="common/ajax-functions.js"></script>
+	    <script type='text/javascript' src='controllers/stockController.client.js'></script>
 	</body>
 	
 	
