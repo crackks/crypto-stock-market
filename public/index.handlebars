@@ -26,11 +26,20 @@
 		    	<div class='change'></div>
 	    	</div>
 	    	<div class="Row">
-	    		<div class='graph'></div>
-	    		<div class='price'></div>
+	    		<div class='graph'>
+	    			<div class='price'></div>
+	    		</div>	
 	    	</div>
 	    </div>
-	    <div class='addGraph'></div>
+	    <div class='addGraph'>
+	    	<form action='/add' class='newGraph'>
+	    		<div class=Row>
+		    		<input type='text' name='c1' placeholder='BTC' required="required"/>
+		    		<input type='text' name='c2' placeholder='USD' />
+	    		</div>
+	    		<input type='submit'class='btn' value='Submit'/>
+	    	</form>
+	    </div>
 	    
 	    
 		

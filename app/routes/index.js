@@ -13,7 +13,24 @@ module.exports = function (app, passport) {
             res.render('index');
         });
 	
-	app.route('/:time')
-	    .get(stock.getChart);
+	app.route('/hour')
+	    .get(stock.getHourChart);
 	
+	app.route('/day')
+	    .get(stock.getDayChart);
+	    
+	app.route('/week')
+	    .get(stock.getWeekChart);
+	    
+	app.route('/month')
+	    .get(stock.getMonthChart);
+	    
+	app.route('/year')
+	    .get(stock.getYearChart);
+	    
+	app.route('/all')
+        .get(stock.getAllChart);
+        
+    app.route('/add?:q')
+        .get(stock.addChart)
 };
