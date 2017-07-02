@@ -32,5 +32,8 @@ module.exports = function (app, passport) {
         .get(stock.getAllChart);
         
     app.route('/add?:q')
-        .get(stock.addChart)
+        .get(stock.addChart);
+        
+    app.route('/rm/:fsym/:tsym/:currentTime')
+    	.get(stock.removeChart);
 };

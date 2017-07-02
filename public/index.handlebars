@@ -32,6 +32,13 @@
 	    	</div>
 	    </div>
 	    <div class='addGraph'>
+	    	<div class='newChart'></div>
+	    	{{#if success_msg}}
+	    			<div class='alert alert-success text-center' style='width:80%; margin:0 auto;'>{{success_msg}}</div>
+	    	{{/if}}
+	    	{{#if error_msg}}
+	    		<div class='alert alert-danger text-center' style='width:80%; margin:0 auto;'>{{error_msg}}</div>
+	    	{{/if}}
 	    	<form action='/add' class='newGraph'>
 	    		<div class=Row>
 		    		<input type='text' name='c1' placeholder='BTC' required="required"/>
@@ -39,6 +46,7 @@
 	    		</div>
 	    		<input type='submit'class='btn' value='Submit'/>
 	    	</form>
+	    
 	    </div>
 	    
 	    

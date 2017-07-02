@@ -54,35 +54,35 @@ body{
     border-style:solid;
     border-color:rgb(255,255,255);
     border-width:2px;
-    margin: 0px 7% 50px auto;
+    margin: 0px 7% 50px 3%;
     display: flex;
     flex-direction:row;
-    align-items:flex-end;
+    align-items:center;
 }
 
-.price{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-}
+
 
 .dispPrice{
     position:absolute;
     right:-10px;
-    margin-right:-10%;
-    width:100%;
-    height:2px;
     z-index:0;
 }
 
+.dispCurrentPrice{
+    position:absolute;
+    right:-10px;
+    z-index:1;
+
+}
 .displayTime{
     display: flex;
     flex-direction:column-reverse;
-    
+    justify-content:center;
     align-items:center;
     margin-top:10px;
     color:rgb(255,255,255);
     align-self:flex-end;
+    margin-left:20%;
     
 }
 
@@ -94,12 +94,18 @@ body{
     
 }
 .point{
+    position:absolute;
     width:15px;
+    border-radius:2px;
     height:10px;
     margin-left: 1px;
     margin-right:1px;
     background-color:rgb(220,120,120);
     z-index:1;
+    box-shadow:inset 1px 1px 2px rgba(255,255,255,0.8), 1px 1px 5px rgb(0,0,0);
+    border-color:rgb(255,255,255);
+    border-width:1px;
+    border-style:solid;
 }
 
 .line{
@@ -119,13 +125,14 @@ body{
     padding:20px;
     display: flex;
     flex-direction:column;
-    margin-left:10%;
+    margin-left:13.8%;
     border-radius:2px;
     border-style:solid;
     border-color:rgb(255,255,255);
     border-width:2px;
     margin-bottom: 20px;
     box-shadow: 2px 3px 10px rgb(0,0,0);
+    margin-top:10px;
 }
 
 input[type='text']{
@@ -149,4 +156,53 @@ input[type='submit']{
 input[type='submit']:hover{
     background-color:rgb(120,220,120);
     box-shadow:inset -3px -3px 15px rgba(160,160,160,0);
+}
+
+.dispGraphContainer{
+    position:relative;
+    width:240px;
+    padding:20px;
+    display: flex;
+    flex-direction:column;
+    border-radius:2px;
+    border-style:solid;
+    border-color:rgb(255,255,255);
+    border-width:2px;
+    margin-bottom: 20px;
+    box-shadow: 2px 3px 10px rgb(0,0,0);
+    margin-top:10px;
+    margin-left:10px;
+}
+
+.newChart{
+    margin-left:13%;
+    width:80%;
+    display:flex;
+    flex-flow:row wrap;
+}
+
+.cross-btn{
+    position:absolute;
+    top:3px;
+    right:3px;
+    width:30px;
+    height:30px;
+    border-style:none;
+}
+.cross-btn:hover{
+    color:rgb(255,255,255);
+}
+.cross-btn:active{
+    box-shadow:none;
+    color:rgb(210,210,210);
+}
+
+.currency{
+    color:rgb(255,255,255);
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.change{
+    font-size:10px;
 }
