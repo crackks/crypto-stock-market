@@ -1,90 +1,89 @@
 'use strict';
-
+ 
 var Client = require('node-rest-client').Client;
 var Chart=require('../models/chart.js'); 
-
  
-
-
+  
+ 
 function Stock(){
-    
+     
     var client = new Client();
-    
-    this.getHourChart=function(req,res){
-        openDataBase('histominute',60,1,res); 
+      
+      
+    this.getChart=function(data,callback){
+        if(data=='hour'){
+            openDataBase('histominute',60,1,callback); 
+        }
+        else if(data=='day'){
+            openDataBase('histominute',72,50,callback);  
+        }
+        else if (data=='week'){
+            openDataBase('histohour',56,3,callback);  
+        }
+        else if (data=='month'){
+            openDataBase('histohour',72,10,callback);  
+        }
+        else if (data=='year'){
+            openDataBase('histoday',72,5,callback);   
+        }
+        else{
+            openDataBase('histoday',72,30,callback);  
+        }
     };
-    
-    this.getDayChart=function(req,res){
-        openDataBase('histominute',72,50,res);
-    };
-    
-    this.getWeekChart=function(req,res){
-        openDataBase('histohour',56,3,res);
-    };
-    
-    this.getMonthChart=function(req,res){
-         openDataBase('histohour',72,10,res);
-    };
-    
-    
-    this.getYearChart=function(req,res){
-        openDataBase('histoday',72,5,res);
-    };
-    
-    this.getAllChart=function(req,res){
-        openDataBase('histoday',72,30,res);
-    };
-    
-    
-    function openDataBase(time,limit,aggregate,res){
+      
+      
+     
+      
+    function openDataBase(time,limit,aggregate,callback){
         Chart.find().exec(function(err,chartData){
             if (err) throw err;
             var i=0;
             var imax=chartData.length-1;
             var resArray=[];
-            getOneChart(i,imax,chartData,resArray,time,limit,aggregate,res); 
+            getOneChart(i,imax,chartData,resArray,time,limit,aggregate,callback); 
         });  
     }
-    
-    function getOneChart(i,imax,chartData,resArray,time,limit,aggregate,res){
+     
+    function getOneChart(i,imax,chartData,resArray,time,limit,aggregate,callback){
             var url='https://min-api.cryptocompare.com/data/'+time+'?fsym='+chartData[i].fsym+'&tsym='+chartData[i].tsym+'&limit='+limit+'&aggregate='+aggregate+'&e=CCCAGG';   
             client.get(url, function (data, response) {
                 if (i<imax){
                     resArray.push(data);
                     i++;
-                    getOneChart(i,imax,chartData,resArray,time,limit,aggregate,res);
+                    getOneChart(i,imax,chartData,resArray,time,limit,aggregate,callback);
                 }
                 else{
                     resArray.push(data);
-                    res.json({chart:resArray,chartData:chartData});
+                    var sendData={chart:resArray,chartData:chartData};
+                    callback(null,sendData); 
                 }
             });
         }
-    
-    
-    
-    
+     
+     
+     
+     
     this.addChart=function(req,res){
         var fsym=req.query.c1.toUpperCase();
         var tsym='USD';
         if (req.query.c2){
             tsym=req.query.c2.toUpperCase();
-        }
+        }     
         var url='https://min-api.cryptocompare.com/data/histoday?fsym='+fsym+'&tsym='+tsym+'&limit=72&aggregate=30&e=CCCAGG';
         client.get(url, function (data, response) {
-           if (data.Response=='Success'){
-               if (data.ConversionType.type=='invert'){
-                   var a=fsym;
-                   fsym=tsym;
-                   tsym=a;
-               }
-               else if(data.ConversionType.type=='multiply'){
-                   tsym=data.ConversionType.conversionSymbol;
-               }
-               else if (data.ConversionType.type=='invert_multiply'){
-                   fsym=tsym;
-                   tsym=data.ConversionType.conversionSymbol;
-               }
+            if (data.Response=='Success'){
+                if (data.ConversionType.type=='invert'){
+                    var a=fsym;
+                    fsym=tsym;
+                    tsym=a;
+                }
+                else if(data.ConversionType.type=='multiply'){
+                    tsym=data.ConversionType.conversionSymbol;
+                }
+                else if (data.ConversionType.type=='invert_multiply'){
+                    fsym=tsym;
+                    tsym=data.ConversionType.conversionSymbol;
+                }
                 Chart.find({fsym:fsym,tsym:tsym}).exec(function(err,chart){
                     if (err)throw err;
                     if(!chart[0]){
@@ -110,24 +109,21 @@ function Stock(){
                         res.redirect('/');
                     }
                 });
-           }
-           else{
-               req.flash('error_msg','The chart was not found');
-               res.redirect('/');
-           }
-        });
-    };
-    
-    this.removeChart=function(req,res){
-        var fsym=req.params.fsym;
-        var tsym=req.params.tsym;
-        Chart.remove({fsym:fsym,tsym:tsym}).exec(function(err,data){
+            }
+            else{
+                req.flash('error_msg','The chart was not found');
+                res.redirect('/');
+            }
+          });
+
+     };
+     
+    this.removeChart=function(data,callback){
+        Chart.remove(data.chart).exec(function(err,dataChart){
             if (err)throw err;
-            var msg=fsym+'/'+tsym+' has been removed';
-            req.flash('success_msg',msg);
-            res.redirect('/'+req.params.currentTime);
+            callback(null);
         });
     };
 }
-
-module.exports=Stock;
+  
+  module.exports=Stock; 

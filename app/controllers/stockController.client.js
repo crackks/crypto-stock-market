@@ -5,8 +5,6 @@ var graph=document.querySelector('.graph');
 var newGraph=document.querySelector('.newChart');
 var addNewGraph=document.querySelector('.newGraph');
 var chart="";
-var apiUrl=window.location.origin+'/hour';
-ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
 var currentTime='hour';
 
 var hour=document.querySelector('.hour');
@@ -16,75 +14,33 @@ var month=document.querySelector('.month');
 var year=document.querySelector('.year');
 var all=document.querySelector('.all');
 
+var timeArray=[hour,day,week,month,year,all];
+var temeArray2str=['hour','day','week','month','year','all'];
 hour.style['background-color']='rgb(255,255,255)';
 
-hour.addEventListener('click',function(){
-    currentTime='hour';
-    apiUrl=window.location.origin+'/hour';
-    reset();
-    hour.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-    
+timeArray.forEach(function(elem, index){
+    elem.addEventListener('click',function(){
+       currentTime=temeArray2str[index]; 
+       reset();
+       elem.style['background-color']='rgb(255,255,255)';
+       socket.emit('time',{time:currentTime});
+    });
 });
-
-day.addEventListener('click',function(){
-    currentTime='day';
-    apiUrl=window.location.origin+'/day';
-    reset();
-    day.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-});
-
-
-week.addEventListener('click',function(){
-    currentTime='week';
-    apiUrl=window.location.origin+'/week';
-    reset();
-    week.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-});
-
-month.addEventListener('click',function(){
-    currentTime='month';
-    apiUrl=window.location.origin+'/month';
-    reset();
-    month.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-});
-
-year.addEventListener('click',function(){
-    currentTime='year';
-    apiUrl=window.location.origin+'/year';
-    reset();
-    year.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-});
-
-all.addEventListener('click',function(){
-    currentTime='all';
-    apiUrl=window.location.origin+'/all';
-    reset();
-    all.style['background-color']='rgb(255,255,255)';
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
-});
-
 
 function reset(){
-   
-    hour.style['background-color']='rgb(150,150,150)';
-    day.style['background-color']='rgb(150,150,150)';
-    week.style['background-color']='rgb(150,150,150)';
-    month.style['background-color']='rgb(150,150,150)';
-    year.style['background-color']='rgb(150,150,150)';
-    all.style['background-color']='rgb(150,150,150)';
+    timeArray.forEach(function(elem){
+        elem.style['background-color']='rgb(150,150,150)';
+    });
 }
 
+
+
 function showChart(data){
+    console.log(data);
     graph.innerHTML="";
     newGraph.innerHTML="";
-    var newdata=JSON.parse(data);
-    chart=newdata.chartData;
-    var info=newdata.chart;
+    chart=data.chartData;
+    var info=data.chart;
     console.log(info);
     var close=[];
     var max=0;
@@ -109,12 +65,12 @@ function showChart(data){
     var ratio=(max-min)/350;
     var delta=ratio*40;
     var t1=(info[0].TimeFrom+info[0].TimeTo)/2;
-    var timePos=[10,229,458,687,916];
+    var timePos=[10,230,460,690,920];
     var dateMsArray=[info[0].TimeFrom,(info[0].TimeFrom+t1)/2,t1,(info[0].TimeTo+t1)/2,info[0].TimeTo];
     var txt="";
     for (var i=0; i<dateMsArray.length;i++){
         var date=new Date(dateMsArray[i]*1000);
-        txt+='<div class="timeLine" style="margin-left:'+timePos[i]+'px; bottom:-5px;"><div class="displayTime" >'+date.toLocaleString()+'</div>';
+        txt+='<div class="timeLine" style="margin-left:'+timePos[i]*100/920+'%; bottom:-5px;"><div class="displayTime" >'+date.toLocaleString()+'</div>';
         txt+='</div>';
     }
     graph.insertAdjacentHTML('beforeend',txt);
@@ -133,7 +89,7 @@ function showChart(data){
         for (var j=1;j<info[n].Data.length;j++){
             var marg=(close[n][j]-min)/ratio;
             var height=(close[n][j-1]-min)/ratio-(close[n][j]-min)/ratio;
-            var width=(920-close[n].length)/(close[n].length-1)-1;
+            var width=(1000-close[n].length)/(close[n].length-1);
             var color='rgb(255,0,0)';
             if (height<0){
                 marg=marg+height;
@@ -141,10 +97,10 @@ function showChart(data){
                 color='rgb(0,255,0)';
             }
             if (j==close[n].length-1){
-                txt+='<div class="point" style="bottom:'+Number(marg+25)+'px; height:'+Number(height+1)+'px;border-color:'+borderColor[n]+'; background-color:'+color+'; width:'+Number(width-2)+'px; margin-right:20px;left:'+(j-1)*(width+2)+'px"></div>';
+                txt+='<div class="point" style="bottom:'+Number(marg+25)+'px; height:'+Number(height+1)+'px;border-color:'+borderColor[n]+'; background-color:'+color+'; width:'+Number(width/10)+'%; margin-right:20px;left:'+(j-1)*(width/10+0.1)+'%"></div>';
             }
             else{
-                txt+='<div class="point" style="bottom:'+Number(marg+25)+'px; height:'+Number(height+1)+'px; border-color:'+borderColor[n]+';width:'+width+'px;background-color:'+color+'; left:'+(j-1)*(width+2)+'px"></div>';
+                txt+='<div class="point" style="bottom:'+Number(marg+25)+'px; height:'+Number(height+1)+'px; border-color:'+borderColor[n]+';width:'+width/10+'%;background-color:'+color+'; left:'+(j-1)*(width/10+0.1)+'%"></div>';
             }
             
         }
@@ -154,21 +110,13 @@ function showChart(data){
     for (var o=0; o<close.length;o++){
          txt+='<div class="dispCurrentPrice" style="bottom:'+Number(Math.floor(((close[o][close[o].length-1]-min))/ratio+20))+'px; color:'+borderColor[o]+'; margin-right:-5.5%  ">'+close[o][close[o].length-1]+'</div>';
         
-        /*if(checked(currentPrice[o],delta,currentPrice)){
-            txt+='<div class="dispCurrentPrice" style="bottom:'+Number(Math.floor(((close[o][close[o].length-1]-min))/ratio+20))+'px; color:'+borderColor[o]+'; margin-right:-5.5%  ">'+close[o][close[o].length-1]+'</div>';
-        }
-        else{
-            txt+='<div class="dispCurrentPrice" style="right:'+Number(-10*o)+'px; bottom:'+Number(Math.floor(((close[o][close[o].length-1]-min))/ratio+(o-1)*20))+'px; color:'+borderColor[o]+'; margin-right:-5.5%  ">'+close[o][close[o].length-1]+'</div>';
-         
-        }
-        */
     }
     graph.insertAdjacentHTML('beforeend',txt);
     txt='';
     for (var i=0; i<close.length;i++){
         txt+='<div class="dispGraphContainer" style="background-color:'+borderColor[i]+'">';
         txt+='<button class="remove'+i+' btn cross-btn fa fa-times" aria-hidden="true"style="background-color:'+borderColor[i]+'"></button>';
-        txt+='<div class="currency">'+newdata.chartData[i].fsym+'/'+newdata.chartData[i].tsym+'</div><div class="change">';
+        txt+='<div class="currency">'+data.chartData[i].fsym+'/'+data.chartData[i].tsym+'</div><div class="change">';
         var firstPrice=close[i][0];
         if (firstPrice==0){
             firstPrice=0.01;
@@ -213,6 +161,13 @@ function checked (number,delta,currentPrice){
 
 
 function removeChart(index){
-    var apiUrl=window.location.origin+'/rm'+'/'+chart[index].fsym+'/'+chart[index].tsym+'/'+currentTime;
-    ajaxFunctions.ready(ajaxFunctions.ajaxRequest('GET', apiUrl, showChart));
+    socket.emit('removeChart',{chart:{fsym:chart[index].fsym,tsym:chart[index].tsym},time:currentTime}); 
 }
+
+var socket = io.connect('https://nightlife-coordination-app-crkx35.c9users.io');
+socket.on('news', function (data) {
+    showChart(data);
+});
+window.onload=function(){
+    socket.emit('time',{time:currentTime});
+};

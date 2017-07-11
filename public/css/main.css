@@ -95,7 +95,6 @@ body{
 }
 .point{
     position:absolute;
-    width:15px;
     border-radius:2px;
     height:10px;
     margin-left: 1px;
